@@ -25,6 +25,9 @@ module.exports = {
       },
       dob: {
         type: Sequelize.STRING
+      },   
+      tokens: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: true,
@@ -37,6 +40,9 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('users');
+
+    return queryInterface.addColumn('users', 'tokens', Sequelize.STRING, {
+      after: 'dob'
+    });
   }
 };

@@ -1,19 +1,26 @@
 var db = require("../database/connection.js");
 const { check, validationResult } = require('express-validator');
+var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+
+function signIn(params) {
+    
+}
 
 function createUser(body) {
-    user = db.user;
+    let hash = bcrypt.hashSync(body.password, 8); 
+    let user = db.user;  
 
-    user.create({
+    return user.create({
         firstname: body.firstname,
         lastname: body.lastname,
         email: body.email,
-        password: body.password,
+        password: hash,
         phone_number: body.phone_number,
-        dob: body.dob
-    }).then( user => {
-        return user;
-    })
+        dob: body.dob,
+    });
 }
 
 function findUser(userId) {
@@ -31,10 +38,10 @@ function findAllUsers() {
 }
 
 function deleteUser(userId) {
-    user = db.user;
+    user = db.user; 
     user.findByPk(userId).then(user => {
         return user.destroy();
     })
 }
 
-module.exports = {createUser, findAllUsers, findUser, deleteUser};
+module.exports = {db, createUser, findAllUsers, findUser, deleteUser};
