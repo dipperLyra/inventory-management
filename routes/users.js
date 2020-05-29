@@ -42,6 +42,12 @@ router.post('/signin',
   check('password').isLength({ min: 7 })
 ], 
 (req, res, next) => {
+  const errors = validationResult(req);
+  
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
   db.user.findOne({
     where: {email: req.body.email}
   })
@@ -60,8 +66,10 @@ router.post('/signin',
           res.json({ message: "login successful", tokenCreated: token, expiresIn: "1 hour" })
         })
         .catch(err => {
-          res.json({error: err});
+          res.json({message: err});
         });
+    } else {
+      res.json({message: "incorrect password"})
     }
   })
   .catch(err => {
@@ -71,10 +79,8 @@ router.post('/signin',
 
 
 router.get('/', function(req, res, next) {
-  let tokenNotEmpty = req.headers['authorization'] != "" ? req.headers['authorization'] : "";
-
-  if (tokenNotEmpty) {
-    let token = req.headers['x-access-token'] || req.headers['authorization'];
+  let token = req.headers['x-access-token'] || req.headers['authorization'];
+  if (token) {
     if (token.startsWith('Bearer ')) {
       token = token.slice(7, token.length);
     }
@@ -100,10 +106,6 @@ router.get('/', function(req, res, next) {
 
 });
 
-router.put('/:userId', function(req, res, next) {
-  let userId = req.params.userId;
-  users.save().then(user => res.json(user));
-});
 
 router.get('/:userId', function(req, res, next) {
   let token = req.headers['x-access-token'] || req.headers['authorization'];
@@ -118,6 +120,13 @@ router.get('/:userId', function(req, res, next) {
   let userId = req.params.userId;
   users.findUser(userId).then( user => res.json(user) );
 });
+
+
+router.put('/:userId', function(req, res, next) {
+  let userId = req.params.userId;
+  users.save().then(user => res.json(user));
+});
+
 
 router.delete('/:userId', function(req, res, next) {
   let userId = req.params.userId;
