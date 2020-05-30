@@ -5,10 +5,6 @@ var jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 
-function signIn(params) {
-    
-}
-
 function createUser(body) {
     let hash = bcrypt.hashSync(body.password, 8); 
     let user = db.user;  

@@ -4,7 +4,7 @@ var router = express.Router();
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var users = require("../services/users.js");
-var db = require("../database/connection.js");
+var models = require("../database/connection.js");
 const { check, validationResult } = require('express-validator');
 
 
@@ -48,7 +48,7 @@ router.post('/signin',
     return res.status(422).json({ errors: errors.array() });
   }
 
-  db.user.findOne({
+  models.user.findOne({
     where: {email: req.body.email}
   })
   .then(user => {
@@ -57,13 +57,13 @@ router.post('/signin',
     if (isPasswordCorrect) {
       let token = jwt.sign(
         { email: user.email, password: user.password }, 
-        process.env.JWT_SECRET_KET, 
+        process.env.JWT_USER_SECRET_KEY, 
         { expiresIn: "1h" }
       );
 
-      db.token.create({ token: token, user_id: user.id })
+      models.token.create({ token: token, user_id: user.id })
         .then(token => {
-          res.json({ message: "login successful", tokenCreated: token, expiresIn: "1 hour" })
+          res.json({ message: "login successful", user: user, token: token, expiresIn: "1 hour" })
         })
         .catch(err => {
           res.json({message: err});
@@ -85,18 +85,17 @@ router.get('/', function(req, res, next) {
       token = token.slice(7, token.length);
     }
   
-    jwt.verify(token, process.env.JWT_SECRET_KET, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_USER_SECRET_KEY, (err, decoded) => {
       if (err) {
         return res.json({
           success: false,
-          message: "Token is not valid"
+          message: "Invalid token"
         });
       } else {
         req.decoded = decoded;
         users.findAllUsers().then( user => res.json(user) );
       }
     });
- 
   } else {
     return res.json({
       success: false,
@@ -109,16 +108,21 @@ router.get('/', function(req, res, next) {
 
 router.get('/:userId', function(req, res, next) {
   let token = req.headers['x-access-token'] || req.headers['authorization'];
-  if (token.startsWith('Bearer')) {
-    token = token.splice(7, token.length);
+  
+  if (token) {
+    if (token.startsWith('Bearer')) {
+      token = token.splice(7, token.length);
+    }
+    if (jwt.verify(token, process.env.JWT_USER_SECRET_KEY)) {
+      users.findAllUsers().then( user => res.json(user) );
+    } else { 
+      res.json({message: "Invalid token"}) 
+    }
+    let userId = req.params.userId;
+    users.findUser(userId).then( user => res.json(user) );
+  } else {
+    res.json({message: "Auth token not supplied"});
   }
-  if (jwt.verify(token, process.env.JWT_SECRET_KET)) {
-    users.findAllUsers().then( user => res.json(user) );
-  } else { 
-    res.json({message: "wrong token"}) 
-  }
-  let userId = req.params.userId;
-  users.findUser(userId).then( user => res.json(user) );
 });
 
 

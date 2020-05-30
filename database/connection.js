@@ -18,6 +18,7 @@ db.user = sequelize.import("../models/users.js");
 db.roles = sequelize.import("../models/users.js");
 db.token = sequelize.import("../models/token.js");
 db.admin = sequelize.import("../models/admin.js");
+db.outlet = sequelize.import("../models/outlets.js");
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
