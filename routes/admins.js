@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var models = require("../database/connection.js");
-var outlets = require("../routes/outlets");
+var outlets = require("../services/outlets");
+var stocks = require("../services/stocks");
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
@@ -91,7 +92,28 @@ router.post('/signin',
     }
 });
 
-router.post('/outlets', [
+function authenticateAdminUser(req, res) {
+    let token = req.headers['x-access-token'] || req.headers['authorization'];
+
+    if (token) {
+        if (token.startsWith('Bearer ')) token = token.slice(7, token.length);
+
+        return jwt.verify(token, process.env.JWT_ADMIN_SECRET_KEY, (err, decoded) => {
+            if (err) {
+                return res.json({
+                    success: false,
+                    message: "Invalid token",
+                    error: err
+                })
+            } else {return true}
+        });
+    } else {
+        return res.json({message: "Auth token not supplied"});
+    } 
+}
+
+router.post('/outlets', 
+[
     check('name').isString(),
 ], (req, res, next) => {
     const errors = validationResult(req);
@@ -99,7 +121,26 @@ router.post('/outlets', [
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
     }
+
+    authenticateAdminUser(req, res);
     outlets.createOutlet(req, res, next)
+});
+
+router.post('/stocks', 
+[
+    check('name').isString(),
+    check('sku').isString(),
+    check('other_names').optional().trim().escape()
+], 
+(req, res) => {
+    const errors = validationResult(req);
+  
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
+    authenticateAdminUser(req, res);
+    stocks.createStock(req, res); 
 });
 
 module.exports = router;
