@@ -3,11 +3,12 @@ var router = express.Router();
 var models = require("../database/connection.js");
 var outlets = require("../services/outlets");
 var stocks = require("../services/stocks");
+var outletStocks = require('../services/admin');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
 
-router.post('/', 
+router.post('/signup', 
 [
     check('username').isString(),
     check('password').isLength({ min: 7 }),
@@ -142,5 +143,23 @@ router.post('/stocks',
     authenticateAdminUser(req, res);
     stocks.createStock(req, res); 
 });
+
+router.post('/outletstocks', 
+[
+    check('stock_name').isString(),
+    check('sku').isString(),
+    check('other_names').optional().trim().escape(),
+    check('assigned_id').optional().trim(),
+    check('outlet_name').isString()
+],
+(req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
+    outletStocks.OutletStocks(req, res);
+})
 
 module.exports = router;

@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const Sequelize = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 var sequelize = new Sequelize(
     process.env.DB_NAME, 
@@ -23,4 +23,4 @@ db.stock = sequelize.import("../models/stocks.js");
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-module.exports = db;
+module.exports = {db, DataTypes};
