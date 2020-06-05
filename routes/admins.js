@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var models = require("../database/connection.js");
-var outlets = require("../services/outlets");
-var stocks = require("../services/stocks");
-var outletStocks = require('../services/admin');
+var outlets = require("../controllers/outlets");
+var stocks = require("../controllers/stocks");
+var outletStocks = require('../controllers/admin');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');

@@ -1,6 +1,6 @@
 # Project
 
-An inventory management system for a company with a chain of stores and distributors. 
+An inventory management system for a company with a chain of stores and distributors.
 
 ## Aims
 
@@ -14,7 +14,7 @@ This web application was set up for me to practice the following in Node.Js:
 
 ## Features List / Story
 
-A features list is important to limit the scope of this project. 
+A features list is important to limit the scope of this project.
 It is also ensures that effort and time are spent on achieving the aims of this project.
 
 1. Super admin can create site-admin(admin)
@@ -43,7 +43,7 @@ See package.json
 
 ## Steps
 
-### 1 Schema design
+### 1. Schema design
 
 A visual ERD would have been ideal, but, ain't got any for now.
 
@@ -67,9 +67,9 @@ Tables:
 
 * Distributor_assign_stocks_to_outlets: when a stock is assigned to an outlet by a distributor it is saved in this table. distributor - outlet many-to-many relationship.
 
-* Outlet_opening_stock: at the beginning of sales, outlets can record number of available stocks in this table. 
+* Outlet_opening_stock: at the beginning of sales, outlets can record number of available stocks in this table.
 
-* Outlet_closing_stock: at the closing of sales, outlets can record number of available stocks in this table. 
+* Outlet_closing_stock: at the closing of sales, outlets can record number of available stocks in this table.
 
 * Sales: when stocks are sold it is subracted from the available number of stocks an outlet has.
 
@@ -90,7 +90,7 @@ Structure
 11. Sales - stock_id:int, outlet_id:int, quantity:int
 12. transactions - sales_id
 
-### Migrations
+### 2. Migrations
 
 I used Sequelize.Js to generate all the migrations. Though, models alone suffice to generate the tables, but, migrations offer a better way of tracking table definition changes in a project.
 
