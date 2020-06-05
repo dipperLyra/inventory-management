@@ -102,7 +102,8 @@ By default Sequelize will add the following columns below to migrations:
 
 Generate migration files, examples:
 
-```npx sequelize-cli migration:generate ## this will generate only the migration file without a model
+```bash
+npx sequelize-cli migration:generate ## this will generate only the migration file without a model
 npx sequelize-cli model:generate --name Admin --attributes name:string,password:text ## this will generate the migration file and a model.
 ```
 
