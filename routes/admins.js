@@ -5,6 +5,7 @@ var router = express.Router();
 var outlets = require("../controllers/outlets");
 var superAdminController = require("../controllers/admin/super-admin-controller");
 var adminDistController = require("../controllers/admin/admin-handle-distributor-controller");
+var adminStocksController = require("../controllers/admin/admin-handle-stocks");
 var stocks = require("../controllers/stocks");
 var baseAdminController = require("../controllers/admin/base-admin-controller.js");
 var outletStocks = require('../controllers/admin');
@@ -31,7 +32,7 @@ validator.checkParams().admin_creation,
     superAdminController.createAdmin(req, res);
 });
 
-/* Admin sign in */
+/* Admin sign in. Obtain token */
 router.post('/signin', 
 validator.checkParams().username_password, 
 (req, res) => {
@@ -47,7 +48,13 @@ validator.checkParams().username_password,
     adminDistController.createDistributor(req, res);
 });
 
-
+/* Admin create stock */
+router.post('/stocks', 
+validator.checkParams().stock_creation,  
+(req, res) => {
+    validator.validateParams(req, res);
+    adminStocksController.createStock(req, res);
+});
 
 
 function authenticateAdminUser(req, res) {
@@ -84,22 +91,7 @@ router.post('/outlets',
     outlets.createOutlet(req, res, next)
 });
 
-router.post('/stocks', 
-[
-    check('name').isString(),
-    check('sku').isString(),
-    check('other_names').optional().trim().escape()
-], 
-(req, res) => {
-    const errors = validationResult(req);
-  
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
-    }
 
-    authenticateAdminUser(req, res);
-    stocks.createStock(req, res); 
-});
 
 router.post('/outletstocks', 
 [

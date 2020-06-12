@@ -14,6 +14,11 @@ function checkParams() {
             check('admin_username').isString(),
             check('admin_password').isLength({ min: 7 }),
         ],
+        'stock_creation': [
+            check('name').isString(),
+            check('sku').isString(),
+            check('description').isString().optional()
+        ]
     }
 }
 

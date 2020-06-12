@@ -6,6 +6,8 @@ const msg =  {
     'token_saved': 'token saved',
     'invalid_token': 'invalid token',
     'distributor_created': 'distributor created',
+    'stock_created': 'stock created',
+    'stock_not_created': 'stock not created',
 };
 
 module.exports = msg;
