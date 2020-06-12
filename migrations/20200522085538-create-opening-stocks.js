@@ -1,18 +1,28 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('opening_stocks', {
+    return queryInterface.createTable('outlet_opening_stocks', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      fk_stock_id: {
+      stock_id: {
         type: Sequelize.INTEGER,
         references: {
           model: {
             tableName: 'stocks'
+          },
+          key: 'id'
+        },
+        allowNull: false
+      },
+      outlet_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'outlets'
           },
           key: 'id'
         },
@@ -32,6 +42,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('opening_stocks');
+    return queryInterface.dropTable('outlet_opening_stocks');
   }
 };

@@ -14,8 +14,8 @@ module.exports = {
       sku: {
         type: Sequelize.STRING
       },
-      other_names: {
-        type: Sequelize.STRING
+      description: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: true,

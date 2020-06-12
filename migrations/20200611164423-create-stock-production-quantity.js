@@ -1,18 +1,18 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('super_admins', {
+    return queryInterface.createTable('stock_production_quantities', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      username: {
-        type: Sequelize.STRING
+      stock_id: {
+        type: Sequelize.INTEGER
       },
-      password: {
-        type: Sequelize.TEXT
+      quantity: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -25,6 +25,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('super_admins');
+    return queryInterface.dropTable('stock_production_quantities');
   }
 };
