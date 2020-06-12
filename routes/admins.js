@@ -1,21 +1,20 @@
 var express = require('express');
 var router = express.Router();
 
-var models = require("../database/connection.js");
+/* Controllers */
 var outlets = require("../controllers/outlets");
 var superAdminController = require("../controllers/admin/super-admin-controller");
-var validator = require("../config/validate-params");
 var stocks = require("../controllers/stocks");
-var baseAdmin = require("../controllers/admin/base-admin-controller.js");
-var message = require("../config/messages");
+var baseAdminController = require("../controllers/admin/base-admin-controller.js");
 var outletStocks = require('../controllers/admin');
 
-var bcrypt = require('bcryptjs');
+var validator = require("../config/validate-params");
+
 var jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
 
 
-/* only super admin can create admin. */
+/* Create super-admin; only super-admin can create admin. */
 router.post('/super', 
 validator.checkParams().username_password,
 (req, res) => {
@@ -23,7 +22,7 @@ validator.checkParams().username_password,
     superAdminController.createSuperAdmin(req, res);   
 });
 
-/* create admin */
+/* Super-admin create admin */
 router.post('/', 
 validator.checkParams().admin_creation,
 (req, res) => {
@@ -31,11 +30,12 @@ validator.checkParams().admin_creation,
     superAdminController.createAdmin(req, res);
 });
 
+/* Admin sign in */
 router.post('/signin', 
 validator.checkParams().username_password, 
 (req, res) => {
     validator.validateParams(req, res);
-    baseAdmin.signin(req, res);
+    baseAdminController.signin(req, res);
 });
 
 function authenticateAdminUser(req, res) {
@@ -44,7 +44,7 @@ function authenticateAdminUser(req, res) {
     if (token) {
         if (token.startsWith('Bearer ')) token = token.slice(7, token.length);
 
-        return jwt.verify(token, process.env.JWT_ADMIN_SECRET_KEY, (err, decoded) => {
+        return jwt.verify(token, process.env.JWT_ADMIN_SECRET_KEY, (err) => {
             if (err) {
                 return res.json({
                     success: false,
