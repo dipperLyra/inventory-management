@@ -56,9 +56,12 @@ function generateAndSaveToken(model, res) {
             if (err) return res.json({error: err});
 
             res.json({
-                message: message.admin_signin_successful,
-                token: token,
-                expiresIn: "1hr"
+                data: {
+                    success: true,
+                    message: message.admin_signin_successful,
+                    token: token,
+                    expiresIn: "1hr"
+                }
             })
         }
     );
@@ -70,12 +73,19 @@ function saveToken(res, token, error) {
         admin_id: admin.id
     })
     .then(token => res.json({
-        message: "token saved"
+        data: {
+            success: true,
+            message: message.token_saved
+        }
+        
     }))
     .catch(err => {
         res.json({
-            message: message.err_saving_token,
-            error: err
+            data: {
+                success: false,
+                message: message.err_saving_token,
+                error: err
+            }
         })
     });
 }

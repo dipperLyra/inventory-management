@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const distributor = sequelize.define('distributor', {
+  const distributor = sequelize.define('distributors', {
     username: DataTypes.STRING,
     address: DataTypes.STRING,
     password: DataTypes.TEXT

@@ -4,6 +4,7 @@ var router = express.Router();
 /* Controllers */
 var outlets = require("../controllers/outlets");
 var superAdminController = require("../controllers/admin/super-admin-controller");
+var adminDistController = require("../controllers/admin/admin-handle-distributor-controller");
 var stocks = require("../controllers/stocks");
 var baseAdminController = require("../controllers/admin/base-admin-controller.js");
 var outletStocks = require('../controllers/admin');
@@ -37,6 +38,17 @@ validator.checkParams().username_password,
     validator.validateParams(req, res);
     baseAdminController.signin(req, res);
 });
+
+/* Admin create distributor */
+router.post('/distributor', 
+validator.checkParams().username_password, 
+(req, res) => {
+    validator.validateParams(req, res);
+    adminDistController.createDistributor(req, res);
+});
+
+
+
 
 function authenticateAdminUser(req, res) {
     let token = req.headers['x-access-token'] || req.headers['authorization'];
