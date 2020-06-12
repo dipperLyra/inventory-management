@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const SuperAdmin = sequelize.define('SuperAdmin', {
+  const SuperAdmin = sequelize.define('super_admin', {
     username: DataTypes.STRING,
     password: DataTypes.TEXT
   }, {});

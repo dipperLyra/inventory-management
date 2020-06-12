@@ -14,6 +14,7 @@ var sequelize = new Sequelize(
 
 var db = {};
 
+db.superAdmin = sequelize.import("../models/superadmin.js");
 db.user = sequelize.import("../models/users.js");
 db.roles = sequelize.import("../models/users.js");
 db.token = sequelize.import("../models/token.js");

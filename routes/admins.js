@@ -1,96 +1,41 @@
 var express = require('express');
 var router = express.Router();
+
 var models = require("../database/connection.js");
 var outlets = require("../controllers/outlets");
+var superAdminController = require("../controllers/admin/super-admin-controller");
+var validator = require("../config/validate-params");
 var stocks = require("../controllers/stocks");
+var baseAdmin = require("../controllers/admin/base-admin-controller.js");
+var message = require("../config/messages");
 var outletStocks = require('../controllers/admin');
+
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
 
-router.post('/signup', 
-[
-    check('username').isString(),
-    check('password').isLength({ min: 7 }),
-],
-(req, res, next) => {
-    const errors = validationResult(req);
-    
-    if(!errors.isEmpty()) {
-        return res.status(422).json({error: errors.array()});
-    } else {
-        let hash = bcrypt.hashSync(req.body.password, 8);
-        models.admin.create({
-            name: req.body.username,
-            password: hash
-        })
-        .then(res.json({
-            success: true,
-            message: "record created"
-        }))
-        .catch(err => {
-            res.json({
-                success: false,
-                message: err
-            })
-        })
-    }
+
+/* only super admin can create admin. */
+router.post('/super', 
+validator.checkParams().username_password,
+(req, res) => {
+    validator.validateParams(req, res);
+    superAdminController.createSuperAdmin(req, res);   
+});
+
+/* create admin */
+router.post('/', 
+validator.checkParams().admin_creation,
+(req, res) => {
+    validator.validateParams(req, res);
+    superAdminController.createAdmin(req, res);
 });
 
 router.post('/signin', 
-[
-    check('username').isString(),
-    check('password').isLength({ min: 7 }),
-], 
-(req, res, next) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(422).json({error: errors.array()});
-    } else {
-        models.admin.findOne({
-            where: {name: req.body.username }
-        })
-        .then(admin => {
-            let isPasswordCorrect = bcrypt.compareSync(req.body.password, admin.password);
-            
-            if (isPasswordCorrect) {
-                jwt.sign(
-                    {name: admin.username, password: admin.password},
-                    process.env.JWT_ADMIN_SECRET_KEY,
-                    {expiresIn: "1h"},
-                    (err, token) => {
-                        if (err) return res.json({error: err});
-
-                        res.json({
-                            message: "Admin sign in successful.",
-                            admin: admin,
-                            token: token,
-                            expiresIn: "1hr"
-                        });
-                        models.token.create({
-                            token: token,
-                            user_id: admin.id
-                        })
-                        .catch(err => {
-                            res.json({
-                                message: "error saving token to db",
-                                error: err
-                            })
-                        });
-                    }
-                );
-            } else {
-                res.json({message: "Incorrect password"})
-            } 
-        })
-        .catch(err => {
-            res.json({
-                message: "No admin found",
-                error: err
-            })
-        })
-    }
+validator.checkParams().username_password, 
+(req, res) => {
+    validator.validateParams(req, res);
+    baseAdmin.signin(req, res);
 });
 
 function authenticateAdminUser(req, res) {
