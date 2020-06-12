@@ -18,15 +18,16 @@ A features list is important to limit the scope of this project.
 It is also ensures that effort and time are spent on achieving the aims of this project.
 
 1. Super admin create admin
-2. Admin create distributors
-3. Admin create stock
-4. Admin assign distributor stocks
-5. Admin create outlets
-6. Distributor assign stocks to outlets
-7. User sign up under an outlet
-8. User sell stocks (stock transaction)
-9. User can view daily: opening and closing stocks the outlet
-10. Admin can view daily: opening and closing stocks for any outlet
+2. Admin sign in and obtain token
+3. Admin create distributors
+4. Admin create stock
+5. Admin assign distributor stocks
+6. Admin create outlets
+7. Distributor assign stocks to outlets
+8. User sign up under an outlet
+9. User sell stocks (stock transaction)
+10. User can view daily: opening and closing stocks the outlet
+11. Admin can view daily: opening and closing stocks for any outlet
 
 ## Tools
 
