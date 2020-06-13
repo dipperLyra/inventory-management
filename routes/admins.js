@@ -32,6 +32,8 @@ validator.checkParams().admin_creation,
     superAdminController.createAdmin(req, res);
 });
 
+/* All admin requests will first check for a valid token, except in the case of sign in */
+
 /* Admin sign in. Obtain token */
 router.post('/signin', 
 validator.checkParams().username_password, 
@@ -48,13 +50,30 @@ validator.checkParams().username_password,
     adminDistController.createDistributor(req, res);
 });
 
-/* Admin create stock */
+/* Admin create company's global stocks */
 router.post('/stocks', 
 validator.checkParams().stock_creation,  
 (req, res) => {
     validator.validateParams(req, res);
     adminStocksController.createStock(req, res);
 });
+
+/* Admin record stocks produced/available */
+router.post('/stocks/production', 
+validator.checkParams().stock_production,  
+(req, res) => {
+    validator.validateParams(req, res);
+    adminStocksController.produceStocks(req, res);
+});
+
+/* Admin assign stocks to distributors */
+router.post('/stocks/distribution', 
+//validator.checkParams().stock_production,  
+(req, res) => {
+    //validator.validateParams(req, res);
+    adminDistController.assignStocks(req, res);
+});
+
 
 
 function authenticateAdminUser(req, res) {

@@ -45,6 +45,14 @@ function signin(req, res) {
             })
         }
     })
+    .catch(err => {
+        res.json({
+            data: {
+                success: false,
+                message: message.wrong_username,
+            }
+        })
+    })
 }
 
 function generateAndSaveToken(model, res) {

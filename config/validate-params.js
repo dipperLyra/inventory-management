@@ -18,7 +18,12 @@ function checkParams() {
             check('name').isString(),
             check('sku').isString(),
             check('description').isString().optional()
-        ]
+        ],
+        'stock_production': [
+            check('stock_id').isInt(),
+            check('quantity').isInt(),
+            check('sku').isString(),
+        ],
     }
 }
 
