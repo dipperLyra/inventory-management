@@ -11,11 +11,8 @@ var baseAdminController = require("../controllers/admin/base-admin-controller.js
 
 var validator = require("../config/validate-params");
 
-const { check, validationResult } = require('express-validator');
-
-
 /* Create super-admin; only super-admin can create admin. */
-router.post('/super', 
+router.post('/super',
 validator.checkParams().username_password,
 (req, res) => {
     validator.validateParams(req, res);
@@ -30,7 +27,10 @@ validator.checkParams().admin_creation,
     superAdminController.createAdmin(req, res);
 });
 
-/* All admin requests will first check for a valid token, except in the case of sign in */
+/* 
+All admin requests will first check for a valid token, 
+except in the case of a sign in 
+*/
 
 /* Admin sign in. Obtain token */
 router.post('/signin', 

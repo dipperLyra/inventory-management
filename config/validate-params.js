@@ -2,7 +2,7 @@ const { check, validationResult } = require('express-validator');
 var jwt = require('jsonwebtoken');
 
 
-function checkParams() {
+function checkParams(req, res) {
     return {
         'name': [
             check('name').isString(), 
@@ -10,6 +10,14 @@ function checkParams() {
         'username_password': [
             check('username').isString(),
             check('password').isLength({ min: 7 }),
+        ],
+        'user_signup': [
+            check('firstname').isString(),
+            check('lastname').isString(),
+            check('email').isEmail(),
+            check('password').isLength({ min: 7 }),
+            check('phone_number').isMobilePhone(),
+            check('dob').not().isEmpty(),
         ],
         'admin_creation': [
             check('super_admin_username').isString(),

@@ -3,31 +3,17 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
-var users = require("../controllers/users.js");
+var users = require("../controllers/user/users.js");
 var models = require("../database/connection.js");
 const { check, validationResult } = require('express-validator');
+var validator = require("../config/validate-params");
 
 
 router.post('/signup', 
-[
-  check('firstname').isString(),
-  check('lastname').isString(),
-  check('email').isEmail(),
-  check('password').isLength({ min: 7 }),
-  check('phone_number').isMobilePhone(),
-  check('dob').not().isEmpty(),
-], 
-(req, res, next) => {
-  const errors = validationResult(req);
-  
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
-
-  users.createUser(req.body).then(res.json({ 
-    success: true,
-    message: "record created"
-  }));
+validator.checkParams().user_signup, 
+(req, res) => {
+  validator.validateParams(req, res);
+  users.createUser(req, res);
 });
 
 

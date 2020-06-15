@@ -1,6 +1,8 @@
 const msg =  {
     'record_created': 'record created',
     'incorrect_pword': 'incorrect password',
+    'user_created': 'user created',
+    'user_not_created': 'user not created',
     'wrong_username': 'wrong username',
     'admin_signin_successful': 'admin sign in successful',
     'admin_not_found': 'admin not found',
