@@ -4,6 +4,9 @@ var jwt = require('jsonwebtoken');
 
 function checkParams() {
     return {
+        'name': [
+            check('name').isString(), 
+        ],
         'username_password': [
             check('username').isString(),
             check('password').isLength({ min: 7 }),
@@ -23,6 +26,13 @@ function checkParams() {
             check('stock_id').isInt(),
             check('quantity').isInt(),
             check('sku').isString(),
+        ],
+        'assign_stocks': [
+            check('stock_id').isInt(),
+            check('quantity').isInt(),
+            check('admin_id').isInt().optional(),
+            check('outlet_id').isInt().optional(),
+            check('distributor_id').isInt(),
         ],
     }
 }

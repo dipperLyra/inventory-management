@@ -13,6 +13,9 @@ const msg =  {
     'stock_not_created': 'stock not created',
     'stock_not_found': 'stock not found',
     'successful_production': 'successful production',
+    'outlet_created': 'outlet created',
+    'outlet_not_created': 'outlet not created',
+    'outlet_not_found': 'outlet not found',
 };
 
 module.exports = msg;

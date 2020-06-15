@@ -5,15 +5,9 @@ var bcrypt = require("bcryptjs");
 
 
 function createDistributor(req, res) {
-    if (!adminValidator.validateAdmin(req, res)) res.json({
-        data: {
-            success: false,
-            message: message.invalid_token,
-        }
-    })
+    validate(req, res);
 
     let hash = bcrypt.hashSync(req.body.password, 8);
-
     models.db.distributor
     .create({
         username: req.body.username,
@@ -39,15 +33,8 @@ function createDistributor(req, res) {
     })
 }
 
-
-
 async function assignStocks(req, res) {
-    if (!adminValidator.validateAdmin(req, res)) res.json({
-        data: {
-            success: false,
-            message: message.invalid_token,
-        }
-    });
+    validate(req, res);
 
     // Check that stock_id, distributor_id and admin_id exists
     const produced = await models.db.production.findAll({where: {
@@ -70,25 +57,65 @@ async function assignStocks(req, res) {
     }});
     if(assigned === null) res.json({data: {message: message.admin_not_found}})
 
-    let sum = 0;
-    produced.forEach(quantity => {
-        sum = sumer(sum, quantity.quantity);        
-        console.log({produced_quantity: sum})
-    });
-    res.json({produced: assigned})
+    let sumProducedQuantity = 0;
+    let sumAssignedQuantity = 0;
 
-    //let availableP = produced.quantity - assigned.quantity;
-    
-    // models.db.adminToDistributor.create({
-    //     admin_id: admin.id,
-    //     distributor_id: distributor.id,
-    //     stock_id: produced.stock_id,
-        
-    // })
+    // sum all stock_id produced
+    produced.forEach(quantity => {
+        sumProducedQuantity = add(sumProducedQuantity, quantity.quantity);        
+        //console.log({produced_quantity: sumProducedQuantity})
+    });
+
+    // sum all assigned stock_id
+    assigned.forEach(quantity => {
+        sumAssignedQuantity = add(sumProducedQuantity, quantity.quantity);
+        console.log({assigned_quantity: sumAssignedQuantity})
+    });
+    // The difference is the available no of stock_id for sale. 
+    // Todo: rewrite the function calculating available stock_id
+    let availableProduct = sumProducedQuantity - sumAssignedQuantity;
+
+    if (availableProduct > 0) {
+        models.db.adminToDistributor.create({
+            admin_id: req.body.admin_id,
+            distributor_id: req.body.distributor_id, 
+            stock_id: req.body.stock_id,
+            quantity: req.body.quantity
+        })
+        .then(assigned => {
+            res.json({
+                data: {
+                    success: true,
+                    message: "stock assigned to distributor",
+                    assigned: assigned
+                }
+            })
+        })
+    } else {
+        res.json({
+            data: {
+                success: false,
+                message: req.body.stock_id + " not in stock"
+            }
+        })
+    }
 }
 
-function sumer(a, b) {
+function add(a, b) {
     return a + b;
+}
+
+function validate(req, res) {
+    if (!adminValidator.validateAdmin(req, res)) {
+        res.json({
+            data: {
+                success: false,
+                message: message.invalid_token,
+            }
+        });
+    } else {
+        return true;
+    } 
 }
 
 module.exports = { createDistributor, assignStocks }

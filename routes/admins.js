@@ -2,17 +2,15 @@ var express = require('express');
 var router = express.Router();
 
 /* Controllers */
-var outlets = require("../controllers/outlets");
+var outlets = require("../controllers/admin/outlets");
 var superAdminController = require("../controllers/admin/super-admin-controller");
 var adminDistController = require("../controllers/admin/admin-handle-distributor-controller");
 var adminStocksController = require("../controllers/admin/admin-handle-stocks");
-var stocks = require("../controllers/stocks");
+var distributor = require("../controllers/distributor/assign-stock-to-outlet");
 var baseAdminController = require("../controllers/admin/base-admin-controller.js");
-var outletStocks = require('../controllers/admin');
 
 var validator = require("../config/validate-params");
 
-var jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
 
 
@@ -68,66 +66,27 @@ validator.checkParams().stock_production,
 
 /* Admin assign stocks to distributors */
 router.post('/stocks/distribution', 
-//validator.checkParams().stock_production,  
+validator.checkParams().assign_stocks,  
 (req, res) => {
-    //validator.validateParams(req, res);
+    validator.validateParams(req, res);
     adminDistController.assignStocks(req, res);
 });
 
-
-
-function authenticateAdminUser(req, res) {
-    let token = req.headers['x-access-token'] || req.headers['authorization'];
-
-    if (token) {
-        if (token.startsWith('Bearer ')) token = token.slice(7, token.length);
-
-        return jwt.verify(token, process.env.JWT_ADMIN_SECRET_KEY, (err) => {
-            if (err) {
-                return res.json({
-                    success: false,
-                    message: "Invalid token",
-                    error: err
-                })
-            } else {return true}
-        });
-    } else {
-        return res.json({message: "Auth token not supplied"});
-    } 
-}
-
+/* Admin create outlets */
 router.post('/outlets', 
-[
-    check('name').isString(),
-], (req, res, next) => {
-    const errors = validationResult(req);
-  
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
-    }
-
-    authenticateAdminUser(req, res);
-    outlets.createOutlet(req, res, next)
+validator.checkParams().name,
+(req, res, next) => {
+    validator.validateParams(req, res);
+    outlets.createOutlet(req, res)
 });
 
-
-
-router.post('/outletstocks', 
-[
-    check('stock_name').isString(),
-    check('sku').isString(),
-    check('other_names').optional().trim().escape(),
-    check('assigned_id').optional().trim(),
-    check('outlet_name').isString()
-],
+/* Distributor assign stocks to outlet */
+router.post('/distributor/outlet', 
+validator.checkParams().assign_stocks,  
 (req, res) => {
-    const errors = validationResult(req);
+    validator.validateParams(req, res);
+    distributor.assignStock(req, res);
+});
 
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
-    }
-    authenticateAdminUser(req, res);
-    outletStocks.OutletStocks(req, res);
-})
 
 module.exports = router;

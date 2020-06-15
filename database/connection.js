@@ -19,6 +19,7 @@ db.admin = sequelize.import("../models/admin.js");
 db.distributor = sequelize.import("../models/distributor");
 db.production = sequelize.import("../models/stock_production");
 db.adminToDistributor = sequelize.import("../models/admin_stocks_to_distributor");
+db.distributorToOutlet = sequelize.import("../models/distributor_stocks_to_outlets");
 db.user = sequelize.import("../models/users.js");
 db.roles = sequelize.import("../models/users.js");
 db.token = sequelize.import("../models/token.js");
