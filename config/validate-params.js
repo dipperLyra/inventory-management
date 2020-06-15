@@ -40,7 +40,7 @@ function checkParams(req, res) {
             check('quantity').isInt(),
             check('admin_id').isInt().optional(),
             check('outlet_id').isInt().optional(),
-            check('distributor_id').isInt(),
+            check('distributor_id').isInt().optional(),
         ],
     }
 }

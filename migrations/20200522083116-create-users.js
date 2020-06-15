@@ -26,8 +26,8 @@ module.exports = {
       dob: {
         type: Sequelize.STRING
       },   
-      tokens: {
-        type: Sequelize.STRING
+      outlet_id: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: true,

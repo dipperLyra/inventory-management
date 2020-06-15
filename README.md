@@ -27,8 +27,7 @@ It is also ensures that effort and time are spent on achieving the aims of this 
 *. Distributor assign stocks to outlets
 *. User sign up
 *. User sell stocks (stock transaction)
-*. Admin can view daily: opening and closing stocks for any outlet
-*. User can view daily: opening and closing stocks the outlet
+*. Admin can view daily stock transactions for any outlet
 
 ## Tools
 

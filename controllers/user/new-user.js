@@ -1,7 +1,7 @@
 var models = require("../../database/connection.js");
 var message = require("../../config/messages");
 var bcrypt = require('bcryptjs');
-require('dotenv').config();
+var outletExists = require('../outlet/outlet-exists.js');
 
 var user = models.db.user;  
 
@@ -9,6 +9,13 @@ var user = models.db.user;
 function createUser(req, res) {
     let hash = bcrypt.hashSync(req.body.password, 8); 
 
+    if(!outletExists.exists) res.json({
+        data: {
+            success: false,
+            message: message.outlet_not_found
+        }
+    })
+    
     user.create({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -16,6 +23,7 @@ function createUser(req, res) {
         password: hash,
         phone_number: req.body.phone_number,
         dob: req.body.dob,
+        outlet_id: req.body.outlet_id
     })
     .then(user => res.json({
         data: {
@@ -33,20 +41,5 @@ function createUser(req, res) {
     })) 
 }
 
-async function findUser(userId) {
-    return await user.findByPk(userId);
-}
 
-function findAllUsers() {
-    return user.findAll().then(user => {
-        return user;
-    });
-}
-
-function deleteUser(userId) {
-    user.findByPk(userId).then(user => {
-        return user.destroy();
-    })
-}
-
-module.exports = {createUser, findAllUsers, findUser, deleteUser};
+module.exports = {createUser};

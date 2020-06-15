@@ -1,5 +1,6 @@
 var message = require("../../config/messages");
 var models = require("../../database/connection.js");
+var outletExists = require("../outlet/outlet-exists.js");
 var validateDistributor = require('./validate-distributor');
 var totalStockSpent = 0;
 
@@ -7,7 +8,7 @@ var totalStockSpent = 0;
 async function assignStock(req, res) {
     validateDistributor.default(req, res);
     
-    if (!distributorHasStock(req) && !outletExists(req)) res.json({message: "error, no stock or outlet"});
+    if (!distributorHasStock(req) && !outletExists.exists(req, res)) res.json({message: "error, no stock or outlet"});
 
     models.db.distributorToOutlet.create({
         outlet_id: req.body.outlet_id,
@@ -70,12 +71,6 @@ function distributorSpent(req) {
             message: "failed"
         })
     })
-}
-
-async function outletExists(req) {
-    const outlet = await models.db.outlet.findByPk(req.body.outlet_id);
-    if (outlet) return true
-    else{res.json({error: message.outlet_not_found})}
 }
 
 function add(arg1, arg2) {
