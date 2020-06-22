@@ -43,9 +43,7 @@ High level tools/Javascript packages:
 
 See package.json
 
-## Steps
-
-### 1. Schema design
+## Schema design
 
 A visual ERD would have been ideal, but, ain't got any for now.
 
@@ -64,6 +62,12 @@ Tables Structure
 11. outlet_closing_stock - id:int primary key, outlet_id:int, stock_id:int, quantity:int, created_at, updated_at
 12. Sales - id:int primary key, stock_id:int, outlet_id:int, quantity:int, created_at, updated_at
 
-### 2. Migrations and Models
+## Migrations and Models
 
 I used Sequelize.Js to generate all the migrations and models.
+
+## Endpoints
+
+### Admin
+
+/admin

@@ -4,7 +4,6 @@ var outletExists = require("../outlet/outlet-exists.js");
 var validateDistributor = require('./validate-distributor');
 var totalStockSpent = 0;
 
-
 async function assignStock(req, res) {
     validateDistributor.default(req, res);
     
@@ -16,21 +15,19 @@ async function assignStock(req, res) {
         stock_id: req.body.stock_id,
         quantity: req.body.quantity
     })
-    .then(assigned => {
-        res.json({
+    .then(assigned => res.json({
             data: {
                 success: true,
                 message: "assigned to outlet",
                 assigned: assigned
             }
         })
-    })
-    .catch(err => {
-        res.json({
+    )
+    .catch(err => res.json({
             success: false,
             error: err
         })
-    })
+    )
 }
 
 async function distributorHasStock(req, res) {
